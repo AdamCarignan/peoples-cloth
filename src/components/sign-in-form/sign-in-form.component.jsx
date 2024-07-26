@@ -1,6 +1,10 @@
 import Button from '../button/button.component';
 import FormInput from '../form-input/form-input.component';
-import { createUserDocumentFromAuth, signInWithGooglePopup, signInAuthUserWithEmailAndPassword } from '../../utils/firebase/firebase.utils';
+import {
+    createUserDocumentFromAuth,
+    signInWithGooglePopup,
+    signInAuthUserWithEmailAndPassword
+} from '../../utils/firebase/firebase.utils';
 import { useState } from 'react';
 import './sign-in-form.styles.scss';
 
@@ -17,13 +21,12 @@ const SignInForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await signInAuthUserWithEmailAndPassword(
-              email,
-              password
+            const { user } = await signInAuthUserWithEmailAndPassword(
+                email,
+                password
             );
-            console.log(response);
             resetFormFields();
-          } catch (error) {
+        } catch (error) {
             switch (error.code) {
                 case 'auth/invalid-email':
                     alert('invalid email');
@@ -31,28 +34,28 @@ const SignInForm = () => {
                 case 'auth/wrong-password':
                     alert('Incorrect password');
                     break;
-                
+
                 case 'auth/invalid-credential':
                     alert('Incorrect credentials');
                     break;
                 case 'auth/too-many-requests':
                     alert('Too many requests, try again later.');
                     break;
-                default: 
+                default:
                     console.log(error);
-                
+
             }
             switch (error.code) {
-              case 'auth/wrong-password':
-                alert('incorrect password for email');
-                break;
-              case 'auth/user-not-found':
-                alert('no user associated with this email');
-                break;
-              default:
-                console.log(error);
+                case 'auth/wrong-password':
+                    alert('incorrect password for email');
+                    break;
+                case 'auth/user-not-found':
+                    alert('no user associated with this email');
+                    break;
+                default:
+                    console.log(error);
             }
-          }
+        }
     };
 
     const handleChange = (event) => {
@@ -61,9 +64,8 @@ const SignInForm = () => {
     };
 
     const signInWithGoogle = async () => {
-        const { user } = await signInWithGooglePopup();
-        await createUserDocumentFromAuth(user);
-      };
+        await signInWithGooglePopup();
+    };
 
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
@@ -93,7 +95,7 @@ const SignInForm = () => {
                     value={password}
                 />
                 <div className="buttons-container">
-                    <Button type="submit">Sign In with Email</Button>
+                    <Button type="submit">Sign In</Button>
                     <Button buttonType="google" type="button" onClick={signInWithGoogle}>Sign in with Google</Button>
                 </div>
             </form>
