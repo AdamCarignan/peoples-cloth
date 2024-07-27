@@ -20,6 +20,7 @@ root.render(
             <App />
           </CartProvider> 
         </ProductsProvider>
+        <App />
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>
