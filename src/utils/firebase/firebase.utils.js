@@ -10,7 +10,16 @@ import {
     onAuthStateChanged
 } from 'firebase/auth';
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    collection,
+    writeBatch,
+    query,
+    getDocs
+} from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -38,6 +47,35 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 export const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider);
 
 export const db = getFirestore();
+
+export const addCollectionsAndDocuments = async (collectionKey, objectsToAdd, field = 'title') => {
+    const collectionRef = collection(db, collectionKey);
+    const batch = writeBatch(db);
+
+    objectsToAdd.forEach((obj) => {
+        const newDocRef = doc(collectionRef, obj[field].toLowerCase());
+        batch.set(newDocRef, obj)
+    })
+
+    await batch.commit()
+
+}
+
+export const getProductsAndDocuments = async () => {
+    const collectionRef = collection(db, 'products');
+    const q = query(collectionRef);
+
+    const querySnapshot = await getDocs(q);
+    const productMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+        const { title, items } = docSnapshot.data();
+        acc[title.toLowerCase()] = items;
+        return acc;
+    }, {});
+
+    return productMap;
+};
+
+
 
 export const createUserDocumentFromAuth = async (
     userAuth,
