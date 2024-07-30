@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { addCollectionsAndDocuments, getProductsAndDocuments } from "../utils/firebase/firebase.utils.js";
+import { getProductsAndDocuments } from "../utils/firebase/firebase.utils.js";
 
 export const ProductsContext = createContext({
     productMap: {}
